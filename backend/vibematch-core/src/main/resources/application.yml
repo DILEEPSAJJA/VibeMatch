@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: vibematch-core
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+---
+# Dev Profile with H2 for zero-friction local run
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:vibematch_dev;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+---
+# MySQL Profile for production / Docker
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:vibematch_db}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: ${DB_USER:vibematch}
+    password: ${DB_PASSWORD:vibe_secret_123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+---
+# Application Custom Properties
+app:
+  jwt:
+    secret: VibeMatchSuperSecureJwtSecretKeyWithHighEntropy256BitsLong2026!
+    expiration-ms: 86400000 # 24 hours
+  storage:
+    upload-dir: ./uploads
+  kafka:
+    enabled: false
+    bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}

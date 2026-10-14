@@ -1,0 +1,4 @@
+rootProject.name = 'vibematch'
+
+include 'backend:vibematch-core'
+include 'backend:gateway-service'
