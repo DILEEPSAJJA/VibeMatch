@@ -21,7 +21,8 @@ public class MongoConnectionVerifier implements CommandLineRunner {
             int count = mongoTemplate.getCollectionNames().size();
             System.out.println("✅ [MongoDB Atlas] Successfully connected to MongoDB Atlas! Existing collections: " + count);
         } catch (Exception e) {
-            System.err.println("❌ [MongoDB Atlas] Connection failed: " + e.getMessage());
+            System.err.println("⚠️ [MongoDB Atlas] Connection pending: " + e.getMessage());
+            System.err.println("👉 Please ensure the Database User 'dileep_admin' with password 'Dileep123' exists in MongoDB Atlas -> Security -> Database Access with 'Read and write to any database' privilege.");
         }
     }
 }

@@ -17,11 +17,13 @@ function getApiBase(): string {
     if ((import.meta as any).env?.VITE_API_BASE) {
       return (import.meta as any).env.VITE_API_BASE;
     }
-    // If running outside the Nginx port 3000 container (e.g. IntelliJ 63342, Vite 5173, Live Server)
-    if (window.location.port && window.location.port !== '3000') {
-      const host = window.location.hostname || 'localhost';
-      return `http://${host}:8080/api`;
+    // If running in Docker nginx reverse proxy on port 3000
+    if (window.location.port === '3000') {
+      return '/api';
     }
+    // If running inside IntelliJ preview (63342), Vite dev (5173), Spring Boot static (8080), or file://
+    const host = window.location.hostname || 'localhost';
+    return `http://${host}:8080/api`;
   }
   return '/api';
 }

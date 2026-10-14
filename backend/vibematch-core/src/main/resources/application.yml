@@ -8,7 +8,7 @@ spring:
     active: dev
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb+srv://dileep_admin:Dileep123@vibematchcluster.lukhpp1.mongodb.net/vibematch_db?retryWrites=true&w=majority&appName=VibeMatchCluster}
+      uri: ${MONGODB_URI:mongodb+srv://dileep_admin:Dileep123@vibematchcluster.lukhpp1.mongodb.net/vibematch_db?authSource=admin&retryWrites=true&w=majority&appName=VibeMatchCluster}
   servlet:
     multipart:
       max-file-size: 50MB
