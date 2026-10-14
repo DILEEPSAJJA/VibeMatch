@@ -57,6 +57,10 @@ public class SecurityConfig {
                     "/uploads/**",
                     "/ws/**",
                     "/ws",
+                    "/",
+                    "/index.html",
+                    "/assets/**",
+                    "/favicon.ico",
                     "/h2-console/**",
                     "/error"
                 ).permitAll()

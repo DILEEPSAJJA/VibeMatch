@@ -12,8 +12,21 @@ import {
   AdminMetrics, 
   ReportItem 
 } from '../types';
+function getApiBase(): string {
+  if (typeof window !== 'undefined') {
+    if ((import.meta as any).env?.VITE_API_BASE) {
+      return (import.meta as any).env.VITE_API_BASE;
+    }
+    // If running outside the Nginx port 3000 container (e.g. IntelliJ 63342, Vite 5173, Live Server)
+    if (window.location.port && window.location.port !== '3000') {
+      const host = window.location.hostname || 'localhost';
+      return `http://${host}:8080/api`;
+    }
+  }
+  return '/api';
+}
 
-const API_BASE = '/api';
+const API_BASE = getApiBase();
 
 function getHeaders(): HeadersInit {
   const token = localStorage.getItem('token');

@@ -159,7 +159,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const host = (window.location.port === '3000') 
+      ? window.location.host 
+      : `${window.location.hostname || 'localhost'}:8080`;
+    const wsUrl = `${protocol}//${host}/ws`;
 
     try {
       const ws = new WebSocket(wsUrl);
