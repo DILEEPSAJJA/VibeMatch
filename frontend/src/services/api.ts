@@ -14,16 +14,28 @@ import {
 } from '../types';
 function getApiBase(): string {
   if (typeof window !== 'undefined') {
-    if ((import.meta as any).env?.VITE_API_BASE) {
-      return (import.meta as any).env.VITE_API_BASE;
+    // 1. Explicit environment variable takes top precedence
+    const envApiBase = (import.meta as any).env?.VITE_API_BASE;
+    if (envApiBase) {
+      return envApiBase;
     }
-    // If running in Docker nginx reverse proxy on port 3000
+
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0' || hostname === '';
+
+    // 2. Remote deployments (e.g., https://vibematch-dileep.vercel.app)
+    if (!isLocalhost) {
+      // Use relative /api over HTTPS to completely prevent Mixed Content
+      return '/api';
+    }
+
+    // 3. Local Docker Nginx setup (Port 3000)
     if (window.location.port === '3000') {
       return '/api';
     }
-    // If running inside IntelliJ preview (63342), Vite dev (5173), Spring Boot static (8080), or file://
-    const host = window.location.hostname || 'localhost';
-    return `http://${host}:8080/api`;
+
+    // 4. Local previews (IntelliJ 63342, Vite 5173, Spring Boot 8080, file://)
+    return `http://${hostname || 'localhost'}:8080/api`;
   }
   return '/api';
 }

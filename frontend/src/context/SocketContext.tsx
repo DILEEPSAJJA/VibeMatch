@@ -158,11 +158,25 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       return;
     }
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = (window.location.port === '3000') 
-      ? window.location.host 
-      : `${window.location.hostname || 'localhost'}:8080`;
-    const wsUrl = `${protocol}//${host}/ws`;
+    const envWs = (import.meta as any).env?.VITE_WS_URL;
+    let wsUrl: string;
+    if (envWs) {
+      wsUrl = envWs;
+    } else {
+      const isHttps = window.location.protocol === 'https:';
+      const protocol = isHttps ? 'wss:' : 'ws:';
+      const hostname = window.location.hostname;
+      const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0' || hostname === '';
+
+      if (!isLocalhost) {
+        // Remote deployments (e.g. Vercel)
+        wsUrl = `${protocol}//${window.location.host}/ws`;
+      } else if (window.location.port === '3000') {
+        wsUrl = `${protocol}//${window.location.host}/ws`;
+      } else {
+        wsUrl = `${protocol}//${hostname || 'localhost'}:8080/ws`;
+      }
+    }
 
     try {
       const ws = new WebSocket(wsUrl);
