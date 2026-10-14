@@ -169,8 +169,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0' || hostname === '';
 
       if (!isLocalhost) {
-        // Remote deployments (e.g. Vercel)
-        wsUrl = `${protocol}//${window.location.host}/ws`;
+        // Remote deployments (e.g. Vercel) -> connect to live Render backend
+        wsUrl = 'wss://vibematch-jgga.onrender.com/ws';
       } else if (window.location.port === '3000') {
         wsUrl = `${protocol}//${window.location.host}/ws`;
       } else {
