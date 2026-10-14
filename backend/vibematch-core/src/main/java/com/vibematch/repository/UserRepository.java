@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
 
-    @Query("SELECT u FROM User u WHERE u.id != :currentUserId AND u.isBanned = false")
+    @Query("SELECT u FROM User u WHERE u.id != :currentUserId AND u.isBanned = false AND u.role = 'ROLE_USER'")
     List<User> findPotentialMatches(@Param("currentUserId") Long currentUserId);
 
     List<User> findByIsBanned(Boolean isBanned);

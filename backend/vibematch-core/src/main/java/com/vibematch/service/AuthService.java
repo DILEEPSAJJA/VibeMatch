@@ -126,11 +126,6 @@ public class AuthService {
     }
 
     public List<Map<String, String>> getDemoAccounts() {
-        return List.of(
-            Map.of("username", "alex_vibe", "password", "password123", "role", "Tech Alchemist", "name", "Alex Rivera"),
-            Map.of("username", "maya_cosmic", "password", "password123", "role", "Cosmic Dreamer", "name", "Maya Lin"),
-            Map.of("username", "jordan_cyber", "password", "password123", "role", "Synthwave Producer", "name", "Jordan Vance"),
-            Map.of("username", "admin", "password", "admin123", "role", "System Administrator", "name", "Admin Moderator")
-        );
+        return Collections.emptyList();
     }
 }

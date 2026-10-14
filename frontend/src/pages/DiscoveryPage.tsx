@@ -32,7 +32,7 @@ export const DiscoveryPage: React.FC<DiscoveryPageProps> = ({ onOpenProfile, onO
 
   // Filter states
   const [showFilters, setShowFilters] = useState(false);
-  const [minScore, setMinScore] = useState<number>(60);
+  const [minScore, setMinScore] = useState<number>(0);
   const [selectedGender, setSelectedGender] = useState<string>('all');
   const [locationQuery, setLocationQuery] = useState('');
 
@@ -350,8 +350,19 @@ export const DiscoveryPage: React.FC<DiscoveryPageProps> = ({ onOpenProfile, onO
         </div>
       ) : (
         /* Grid Mode */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {matches.map((match) => (
+        matches.length === 0 ? (
+          <div className="py-20 text-center glass-panel rounded-3xl p-8 border border-white/10 space-y-4 max-w-xl mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center mx-auto text-purple-400">
+              <Sparkles className="w-8 h-8 text-cyan-300 animate-pulse" />
+            </div>
+            <h3 className="text-xl font-bold text-white">No Other Registered Users Yet</h3>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              You are among the first members on VibeMatch! As new people register and tune into their frequency, their profiles will automatically appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {matches.map((match) => (
             <div
               key={match.user.id}
               className="glass-card rounded-3xl overflow-hidden border border-white/10 hover:border-purple-500/40 flex flex-col justify-between transition-all group"
@@ -465,7 +476,8 @@ export const DiscoveryPage: React.FC<DiscoveryPageProps> = ({ onOpenProfile, onO
             </div>
           ))}
         </div>
-      )}
+      )
+    )}
 
     </div>
   );

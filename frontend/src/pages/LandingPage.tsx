@@ -17,10 +17,10 @@ import {
 
 interface LandingPageProps {
   onGetStarted: () => void;
-  onQuickLogin: (username: string, pass: string) => void;
+  onSignIn: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onQuickLogin }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn }) => {
   // Interactive Live Match Simulator
   const [selectedVibe1, setSelectedVibe1] = useState('Tech Alchemist');
   const [selectedVibe2, setSelectedVibe2] = useState('Cosmic Dreamer');
@@ -53,16 +53,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onQuickL
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => onQuickLogin('alex_vibe', 'password123')}
-            className="px-4 py-2 rounded-xl glass-card text-xs sm:text-sm font-semibold text-purple-300 hover:text-white hover:border-purple-500/50 transition-all hidden sm:block"
+            onClick={onSignIn}
+            className="px-4 py-2 rounded-xl glass-card text-xs sm:text-sm font-semibold text-purple-300 hover:text-white hover:border-purple-500/50 transition-all cursor-pointer"
           >
-            Demo: Alex (94% Match)
+            Sign In
           </button>
           <button
             onClick={onGetStarted}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-glow-purple transition-all hover:scale-105 flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-glow-purple transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
           >
-            <span>Launch App</span>
+            <span>Create Profile</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -90,41 +90,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onQuickL
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <button
               onClick={onGetStarted}
-              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-extrabold text-base shadow-glow-purple transition-all hover:scale-105 flex items-center gap-2"
+              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-extrabold text-base shadow-glow-purple transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
             >
               <span>Join VibeMatch Now</span>
               <ArrowRight className="w-5 h-5" />
             </button>
 
             <button
-              onClick={() => onQuickLogin('maya_cosmic', 'password123')}
-              className="px-6 py-4 rounded-2xl glass-card text-slate-200 hover:text-white hover:border-cyan-500/50 font-bold text-sm transition-all"
+              onClick={onSignIn}
+              className="px-6 py-4 rounded-2xl glass-card text-slate-200 hover:text-white hover:border-cyan-500/50 font-bold text-sm transition-all cursor-pointer"
             >
-              Explore as Maya (Cosmic Dreamer)
+              Sign In to Your Account
             </button>
-          </div>
-
-          {/* Quick Demo Accounts Banner */}
-          <div className="pt-6">
-            <p className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Instant Demo Logins</p>
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {[
-                { name: 'Alex Rivera', role: 'Tech Alchemist', user: 'alex_vibe' },
-                { name: 'Maya Lin', role: 'Cosmic Dreamer', user: 'maya_cosmic' },
-                { name: 'Jordan Vance', role: 'Synthwave Producer', user: 'jordan_cyber' },
-                { name: 'Admin Moderator', role: 'System Admin', user: 'admin', pass: 'admin123' },
-              ].map((acc) => (
-                <button
-                  key={acc.user}
-                  onClick={() => onQuickLogin(acc.user, acc.pass || 'password123')}
-                  className="px-3 py-1.5 rounded-xl glass-card text-xs text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
-                >
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span className="font-semibold text-white">{acc.name}</span>
-                  <span className="text-[10px] text-purple-400">({acc.role})</span>
-                </button>
-              ))}
-            </div>
           </div>
         </div>
 

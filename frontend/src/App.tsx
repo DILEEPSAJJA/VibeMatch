@@ -19,7 +19,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { SettingsPage } from './pages/SettingsPage';
 
 const MainApp: React.FC = () => {
-  const { user, isLoading, quickLogin } = useAuth();
+  const { user, isLoading } = useAuth();
   const [authView, setAuthView] = useState<'landing' | 'login' | 'register'>('landing');
   const [currentTab, setCurrentTab] = useState<string>('discover');
   
@@ -57,7 +57,7 @@ const MainApp: React.FC = () => {
     return (
       <LandingPage
         onGetStarted={() => setAuthView('register')}
-        onQuickLogin={(username, pass) => quickLogin(username, pass)}
+        onSignIn={() => setAuthView('login')}
       />
     );
   }
