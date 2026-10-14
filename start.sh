@@ -32,7 +32,6 @@ read -p "Enter selection [1-4]: " choice
 case $choice in
     1)
         echo "🚀 Starting Docker Compose environment..."
-        cd docker
         docker compose up --build
         ;;
     2)

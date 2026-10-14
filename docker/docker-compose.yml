@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # MySQL Database
+  # MySQL Database (Host port 3307 to avoid collision with any local MySQL on 3306)
   mysql:
     image: mysql:8.0
     container_name: vibematch-mysql
@@ -12,14 +12,16 @@ services:
       MYSQL_USER: vibematch
       MYSQL_PASSWORD: vibe_secret_123
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "vibematch", "-pvibe_secret_123"]
-      interval: 10s
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u vibematch -pvibe_secret_123 || exit 1"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 15s
     networks:
       - vibematch-net
 
@@ -27,6 +29,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: vibematch-zookeeper
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -39,6 +42,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: vibematch-kafka
+    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -53,7 +57,7 @@ services:
     networks:
       - vibematch-net
 
-  # VibeMatch Backend Core Service (Unified Gateway & Services)
+  # VibeMatch Backend Core Service
   backend:
     build:
       context: ../backend/vibematch-core

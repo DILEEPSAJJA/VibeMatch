@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # MySQL Database (Host port 3307 to avoid collision with any local MySQL on 3306)
+  mysql:
+    image: mysql:8.0
+    container_name: vibematch-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret_password
+      MYSQL_DATABASE: vibematch_db
+      MYSQL_USER: vibematch
+      MYSQL_PASSWORD: vibe_secret_123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u vibematch -pvibe_secret_123 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - vibematch-net
+
+  # Zookeeper for Apache Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: vibematch-zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - vibematch-net
+
+  # Apache Kafka Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: vibematch-kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - vibematch-net
+
+  # VibeMatch Backend Service
+  backend:
+    build:
+      context: ./backend/vibematch-core
+      dockerfile: Dockerfile
+    container_name: vibematch-backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: vibematch_db
+      DB_USER: vibematch
+      DB_PASSWORD: vibe_secret_123
+      KAFKA_SERVERS: kafka:29092
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - vibematch-net
+
+  # VibeMatch React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vibematch-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - vibematch-net
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  vibematch-net:
+    driver: bridge
