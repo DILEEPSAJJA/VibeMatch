@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: vibematch-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: dev
+      - key: MONGODB_URI
+        value: mongodb+srv://dileep_admin:Dileep123@vibematchcluster.lukhpp1.mongodb.net/vibematch_db?authSource=admin&retryWrites=true&w=majority&appName=VibeMatchCluster
