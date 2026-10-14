@@ -73,17 +73,19 @@ export const DiscoveryPage: React.FC<DiscoveryPageProps> = ({ onOpenProfile, onO
     }
 
     if (viewMode === 'card') {
-      setCurrentIndex(prev => Math.min(prev + 1, matches.length));
+      setCurrentIndex(prev => Math.min(prev + 1, visibleMatches.length));
     }
   };
 
   const handlePass = () => {
     if (viewMode === 'card') {
-      setCurrentIndex(prev => Math.min(prev + 1, matches.length));
+      setCurrentIndex(prev => Math.min(prev + 1, visibleMatches.length));
     }
   };
 
-  const currentCard = matches[currentIndex];
+  // Filter out any users who are already friends from the discovery recommendations
+  const visibleMatches = matches.filter(m => m.friendshipStatus !== 'FRIENDS');
+  const currentCard = visibleMatches[currentIndex];
 
   return (
     <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8">
@@ -220,7 +222,7 @@ export const DiscoveryPage: React.FC<DiscoveryPageProps> = ({ onOpenProfile, onO
             <div key={n} className="glass-panel h-80 rounded-3xl animate-pulse" />
           ))}
         </div>
-      ) : matches.length === 0 ? (
+      ) : visibleMatches.length === 0 ? (
         <div className="py-20 text-center glass-panel rounded-3xl p-8 max-w-lg mx-auto space-y-4">
           <div className="w-16 h-16 mx-auto rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center">
             <Radio className="w-8 h-8" />
@@ -350,19 +352,19 @@ export const DiscoveryPage: React.FC<DiscoveryPageProps> = ({ onOpenProfile, onO
         </div>
       ) : (
         /* Grid Mode */
-        matches.length === 0 ? (
+        visibleMatches.length === 0 ? (
           <div className="py-20 text-center glass-panel rounded-3xl p-8 border border-white/10 space-y-4 max-w-xl mx-auto">
             <div className="w-16 h-16 rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center mx-auto text-purple-400">
               <Sparkles className="w-8 h-8 text-cyan-300 animate-pulse" />
             </div>
-            <h3 className="text-xl font-bold text-white">No Other Registered Users Yet</h3>
+            <h3 className="text-xl font-bold text-white">No Other Recommendations Right Now</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
-              You are among the first members on VibeMatch! As new people register and tune into their frequency, their profiles will automatically appear here.
+              You are connected with everyone in this frequency! Check your Friends tab to chat, or relax your filters to explore more profiles.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {matches.map((match) => (
+            {visibleMatches.map((match) => (
             <div
               key={match.user.id}
               className="glass-card rounded-3xl overflow-hidden border border-white/10 hover:border-purple-500/40 flex flex-col justify-between transition-all group"

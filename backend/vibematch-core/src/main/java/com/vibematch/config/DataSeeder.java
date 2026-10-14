@@ -52,6 +52,42 @@ public class DataSeeder implements CommandLineRunner {
             preferenceRepository.save(new UserPreference(admin));
         }
 
+        // Ensure real primary user Deepu exists on cloud/dev instances
+        if (userRepository.findByUsername("Deepu").isEmpty()) {
+            String pass = passwordEncoder.encode("123456");
+            User deepu = new User("Deepu", "dileep@gmail.com", pass, "Dileep");
+            deepu.setLocation("Hyderabad");
+            deepu.setGender("Male");
+            deepu.setAge(22);
+            deepu.setVibeArchetype("Tech Alchemist");
+            deepu.setAvatarUrl("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80");
+            deepu.setIsOnline(true);
+            deepu.setRole("ROLE_USER");
+            deepu.setInterests(new java.util.HashSet<>(List.of("Photography", "Tech", "AI Art", "Gaming")));
+            deepu.setHobbies(new java.util.HashSet<>(List.of("Coding", "Music Production")));
+            deepu.setLanguages(new java.util.HashSet<>(List.of("English")));
+            deepu = userRepository.save(deepu);
+            preferenceRepository.save(new UserPreference(deepu));
+        }
+
+        // Ensure real primary user deekshi exists on cloud/dev instances
+        if (userRepository.findByUsername("deekshi").isEmpty()) {
+            String pass = passwordEncoder.encode("123456");
+            User deekshi = new User("deekshi", "deek@gmail.com", pass, "Deekshitha");
+            deekshi.setLocation("Hyderabad");
+            deekshi.setGender("Female");
+            deekshi.setAge(22);
+            deekshi.setVibeArchetype("Tech Alchemist");
+            deekshi.setAvatarUrl("https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80");
+            deekshi.setIsOnline(true);
+            deekshi.setRole("ROLE_USER");
+            deekshi.setInterests(new java.util.HashSet<>(List.of("Photography", "Design", "Tech", "Synthwave", "Gaming")));
+            deekshi.setHobbies(new java.util.HashSet<>(List.of("Coding", "Music Production")));
+            deekshi.setLanguages(new java.util.HashSet<>(List.of("English")));
+            deekshi = userRepository.save(deekshi);
+            preferenceRepository.save(new UserPreference(deekshi));
+        }
+
         // Initialize default communities if empty (without fake members/posts)
         if (communityRepository.count() == 0) {
             Community c1 = new Community(

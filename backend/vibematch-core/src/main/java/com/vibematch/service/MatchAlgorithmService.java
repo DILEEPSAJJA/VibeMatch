@@ -202,6 +202,7 @@ public class MatchAlgorithmService {
 
         return potentialUsers.stream()
                 .filter(u -> !blockedUserRepository.isBlockedEitherWay(currentUser, u))
+                .filter(u -> !friendshipRepository.areFriends(currentUser, u))
                 .filter(u -> {
                     if (filter == null) return true;
                     if (filter.getGender() != null && !filter.getGender().equalsIgnoreCase("all") && !filter.getGender().equalsIgnoreCase(u.getGender())) {
